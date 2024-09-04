@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <%- include('header'); -%>
+    <script src="/javascripts/register.js"></script>
+  </head>
+  <body>
+    <script
+      charset="utf-8"
+      src="https://static.line-scdn.net/liff/edge/2/sdk.js"
+    ></script>
+    <script>
+      liff
+        .init({
+          liffId: "2006198597-yDGlna53", // 使用自己的 liffId
+          // 啟用自動登入過程
+          //   withLoginOnExternalBrowser: true,
+        })
+        .then(() => {
+          liff
+            .getProfile()
+            .then((profile) => {
+              $("#username").val(profile.displayName);
+            })
+            .catch((err) => console.log("errorgetProfile", err));
+
+          // 顯示 UserId
+          $("#userid").val(JSON.stringify(liff.getContext()));
+          var Context = JSON.stringify(liff.getContext());
+          console.log(Context);
+          // ButtonGetProfile
+        });
+    </script>
+    <div
+      class="container d-flex align-items-center justify-content-center"
+      style="height: 100vh"
+    >
+      <div class="col-md-6">
+        <h1 class="mb-5" style="font-size: 2.5rem">City Burger 登入</h1>
+
+        <div class="mb-3">
+          <label for="username" class="form-label">User name</label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            aria-describedby="usernameHelp"
+            placeholder="請輸入使用者名稱"
+            onfocus="this.placeholder=''"
+            onblur="this.placeholder='請輸入使用者名稱'"
+          />
+          <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="請輸入密碼"
+          />
+        </div>
+        <textarea name="test" id="test"></textarea>
+        <div class="text-center pt-3">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            style="width: 200px"
+            onclick="register()"
+          >
+            送出
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
