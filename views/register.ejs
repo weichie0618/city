@@ -1,5 +1,7 @@
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <%- include('header'); -%>
     <script src="/javascripts/register.js"></script>
   </head>
@@ -11,7 +13,7 @@
     <script>
       liff
         .init({
-          liffId: "2006198597-yDGlna53", // 使用自己的 liffId
+          liffId: "2006231077-Add1OBJ8", // 使用自己的 liffId
           // 啟用自動登入過程
           //   withLoginOnExternalBrowser: true,
         })
@@ -23,11 +25,12 @@
             })
             .catch((err) => console.log("errorgetProfile", err));
 
-          // 顯示 UserId
+          // 將LIFF資訊放入textarea
+
+          // 顯示UserId
           $("#userid").val(JSON.stringify(liff.getContext()));
           var Context = JSON.stringify(liff.getContext());
           console.log(Context);
-          // ButtonGetProfile
         });
     </script>
     <div
@@ -60,7 +63,7 @@
             placeholder="請輸入密碼"
           />
         </div>
-        <textarea name="test" id="test"></textarea>
+        <textarea name="test" id=""></textarea>
         <div class="text-center pt-3">
           <button
             type="submit"
