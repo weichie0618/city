@@ -22,7 +22,7 @@ router.post("/register", async function (req, res, next) {
     if (addUser === "帳號密碼正確") {
       res.json({ message: "帳號密碼正確" });
     } else if (addUser === "帳號密碼錯誤") {
-      return res.status(500).json({ message: "帳號密碼錯誤" });
+      res.json({ message: "帳號密碼錯誤" });
     } else {
       return res.status(500).json({ message: "內部伺服器錯誤" });
     }

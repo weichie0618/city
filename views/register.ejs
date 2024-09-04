@@ -21,9 +21,10 @@
           liff
             .getProfile()
             .then((profile) => {
-              $("#username").val(profile.displayName);
+              var username = profile.displayName;
+              //  $('#username').val(username);
             })
-            .catch((err) => console.log("errorgetProfile", err));
+            .catch((err) => console.log("獲取用戶資料失敗", err));
 
           // 將LIFF資訊放入textarea
 
