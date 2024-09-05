@@ -3,6 +3,8 @@ var f = require("../googleSheetApp");
 var router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
+const line = require("@line/bot-sdk");
+const lineBot = require("../line");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
@@ -29,13 +31,24 @@ router.post("/register", async function (req, res, next) {
       res.json({ message: "帳號密碼正確" });
     } else if (addUser === "帳號密碼錯誤") {
       res.json({ message: "帳號密碼錯誤" });
+    } else if (addUser === "帳號不存在") {
+      res.json({ message: "帳號不存在" });
     } else {
-      res.json({ message: "錯誤" });
+      res.json({ message: "異常錯誤" });
     }
   } catch (error) {
     console.error("過程中發生錯誤：", error);
     res.status(500).json({ error: "失敗" });
   }
+});
+
+router.post("/callback", line.middleware(lineBot.config), (req, res) => {
+  Promise.all(req.body.events.map(lineBot.handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
 });
 
 module.exports = router;

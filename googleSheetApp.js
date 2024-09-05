@@ -24,6 +24,48 @@ async function initializeDoc() {
     isInitialized = true;
   }
 }
+
+// 儲存googlesheet
+async function saveToGoogleSheet(message, data) {
+  await initializeDoc(); // 確保文檔已初始化
+
+  const sheet = doc.sheetsByTitle["linetoken"];
+  await sheet.loadHeaderRow();
+  const headers = sheet.headerValues;
+
+  // 尋找 userId 欄位的索引
+  const userIdColumnIndex = headers.findIndex((header) => header === "userId");
+  if (userIdColumnIndex === -1) {
+    console.log("找不到 'userId' 欄位");
+    return;
+  }
+
+  // 尋找匹配的 userId
+  const allRows = await sheet.getRows();
+  const targetRow = allRows.find(
+    (row) => row._rawData[userIdColumnIndex] === data.userId
+  );
+
+  if (!targetRow) {
+    console.log("找不到匹配的 userId");
+    return;
+  }
+
+  // 尋找 token 欄位的索引
+  const tokenColumnIndex = headers.findIndex((header) => header === "token");
+  if (tokenColumnIndex === -1) {
+    console.log("找不到 'token' 欄位");
+    return;
+  }
+
+  // 獲取 token 值
+  const token = targetRow._rawData[tokenColumnIndex];
+  createLineBot(message, token);
+
+  // 在這裡可以進行後續處理，例如返回 token 或進行其他操作
+  // return token;
+}
+
 async function main(data) {
   console.log(data);
   try {
@@ -70,7 +112,7 @@ async function main(data) {
     console.log("輸入的帳號:", data[a]);
     if (targetRowIndex === -1) {
       console.log("找不到匹配的帳號");
-      return "帳號不存在";
+      saveToGoogleSheet("帳號不存在", data);
     }
 
     console.log(`line id 列是第 ${targetRowIndex + 1} 列`);

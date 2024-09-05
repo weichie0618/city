@@ -20,7 +20,7 @@
         .then(() => {
           liff.getProfile().then((profile) => {
             var username = profile.displayName;
-            $("#username").val(username);
+            // $("#username").val(username);
 
             window.lineUsername = username;
           });
@@ -59,9 +59,19 @@
       style="height: 100vh"
     >
       <div class="col-md-6">
-        <h1 class="mb-5" style="font-size: 2.5rem">City Burger 登入</h1>
+        <h1
+          class="mb-5 text-nowrap text-truncate"
+          style="
+            font-size: calc(1.5rem + 1.5vw);
+            height: auto;
+            overflow: visible;
+          "
+        >
+          City Burger 登入
+        </h1>
 
         <div class="mb-3">
+          <div id="err"></div>
           <label for="username" class="form-label">User name</label>
 
           <input
@@ -75,7 +85,7 @@
           />
           <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
         </div>
-        <div class="mb-3">
+        <div class="mb-5">
           <label for="password" class="form-label">Password</label>
           <input
             type="password"
@@ -90,10 +100,27 @@
             type="submit"
             class="btn btn-primary btn-lg"
             style="width: 200px"
-            onclick="register()"
+            onclick="checkInputAndRegister()"
           >
             送出
           </button>
+          <script>
+            function checkInputAndRegister() {
+              var username = document.getElementById("username").value;
+              var password = document.getElementById("password").value;
+              if (username.trim() === "" || password.trim() === "") {
+                // 移除現有的警告訊息
+                $(".alert").remove();
+
+                // 插入新的警告訊息
+                $("#err").html(
+                  '<div class="alert alert-danger alert-dismissible fade show" role="alert">請輸入用戶名和密碼<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                );
+              } else {
+                register();
+              }
+            }
+          </script>
         </div>
       </div>
     </div>
