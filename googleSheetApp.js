@@ -30,11 +30,14 @@ async function saveToGoogleSheet(message, data) {
   await initializeDoc();
 
   try {
-    const result = await sendPostRequest(process.env.GOOGLE_SCRIPT_URL, {
-      message: message,
-      userId: data.userId || "U162c1b996959d98ef7d27ebad1a4e10c",
-      city: "burger",
-    });
+    const result = await sendPostRequest(
+      "https://script.google.com/macros/s/AKfycbzVBHgSembVNtCAlKI3yGiff1d3FtHsfxUGA5OhqpVHgA9rr2KweNhl4DaSv5dBn2AynQ/exec",
+      {
+        message: message,
+        userId: data.userId || "U162c1b996959d98ef7d27ebad1a4e10c",
+        city: "burger",
+      }
+    );
     console.log("回傳成功:", result);
   } catch (error) {
     console.error("回傳錯誤:", error);
