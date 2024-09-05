@@ -2,9 +2,7 @@ var express = require("express");
 var f = require("../googleSheetApp");
 var router = express.Router();
 const bcrypt = require("bcrypt");
-const User = require("../models/users");
 
-const lineBot = require("../line");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
