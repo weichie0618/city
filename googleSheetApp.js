@@ -60,8 +60,25 @@ async function saveToGoogleSheet(message, data) {
 
   // 獲取 token 值
   const token = targetRow._rawData[tokenColumnIndex];
-  createLineBot(message, token);
-
+  // createLineBot(message, token);
+  fetch(
+    "https://script.google.com/macros/s/AKfycbzqfqreMDcBzmlwL1Vt4cKaVEV2pu_obkYJwvAYJm_tMOUugGFI3G90Ed-KBdM6LlEhUA/exec",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: message,
+        token: token,
+        userId: data.userId,
+        city: "burger",
+      }),
+    }
+  )
+    .then((response) => response.json())
+    .then((result) => console.log("回傳成功:", result))
+    .catch((error) => console.error("回傳錯誤:", error));
   // 在這裡可以進行後續處理，例如返回 token 或進行其他操作
   // return token;
 }
@@ -113,6 +130,7 @@ async function main(data) {
     if (targetRowIndex === -1) {
       console.log("找不到匹配的帳號");
       saveToGoogleSheet("帳號不存在", data);
+      // 使用 fetch 發送 POST 請求到 Google Apps Script
     }
 
     console.log(`line id 列是第 ${targetRowIndex + 1} 列`);

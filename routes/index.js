@@ -3,7 +3,7 @@ var f = require("../googleSheetApp");
 var router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
-const line = require("@line/bot-sdk");
+
 const lineBot = require("../line");
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -40,15 +40,6 @@ router.post("/register", async function (req, res, next) {
     console.error("過程中發生錯誤：", error);
     res.status(500).json({ error: "失敗" });
   }
-});
-
-router.post("/callback", line.middleware(lineBot.config), (req, res) => {
-  Promise.all(req.body.events.map(lineBot.handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
 });
 
 module.exports = router;
