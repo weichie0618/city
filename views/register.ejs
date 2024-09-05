@@ -18,13 +18,33 @@
           //   withLoginOnExternalBrowser: true,
         })
         .then(() => {
-          liff
-            .getProfile()
-            .then((profile) => {
-              var username = profile.displayName;
-              //  $('#username').val(username);
+          liff.getProfile().then((profile) => {
+            var username = profile.displayName;
+            $("#username").val(username);
+
+            window.lineUsername = username;
+          });
+
+          // 獲取 LIFF 上下文信息
+          const liffContext = liff.getContext();
+
+          // 提取所需的信息
+          const userId = liffContext.userId;
+          const liffId = liffContext.liffId;
+
+          // 將信息設置為全局變量
+          window.userId = userId;
+          window.liffId = liffId;
+
+          // 將信息顯示在頁面上
+          $("#userid").val(
+            JSON.stringify({
+              userId: userId,
+              liffId: liffId,
             })
-            .catch((err) => console.log("獲取用戶資料失敗", err));
+          );
+
+          console.log("LIFF 上下文信息:", liffContext);
 
           // 將LIFF資訊放入textarea
 
@@ -64,7 +84,7 @@
             placeholder="請輸入密碼"
           />
         </div>
-        <textarea name="test" id=""></textarea>
+
         <div class="text-center pt-3">
           <button
             type="submit"

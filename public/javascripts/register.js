@@ -1,8 +1,20 @@
 function register() {
+  var lineUsername = window.lineUsername || "";
+  var userId = window.userId || "";
+  var liffId = window.liffId || "";
+
+  // 現在您可以使用 username 變量
+
   let username = $("#username").val();
   let password = $("#password").val();
 
-  let data = { username: username, password: password };
+  let data = {
+    userId: userId,
+    liffId: liffId,
+    lineUsername: lineUsername,
+    username: username,
+    password: password,
+  };
   $.ajax({
     url: "/register",
     type: "POST",

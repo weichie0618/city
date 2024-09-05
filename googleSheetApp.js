@@ -29,36 +29,54 @@ async function main(data) {
   try {
     await initializeDoc(); // 確保文檔已初始化
 
-    const sheet = doc.sheetsByIndex[0];
-    var a = Object.keys(data)[0];
-    var b = Object.keys(data)[1];
+    const sheet = doc.sheetsByTitle["line 登入資訊"];
+    const sheet2 = doc.sheetsByTitle["加盟表帳密"];
+    var a = Object.keys(data)[3];
+    var b = Object.keys(data)[4];
+    const allRows = await sheet.getRows();
 
     // 加載標題行
     await sheet.loadHeaderRow();
-
     const headers = sheet.headerValues;
-    const lineIdColumnIndex = headers.findIndex((header) => header === a);
+
+    // 檢查 userId 是否重複
+    const userIdColumnIndex = headers.findIndex(
+      (header) => header === Object.keys(data)[0]
+    );
+
+    const existingUserId = allRows.find(
+      (row) => row._rawData[userIdColumnIndex] === data.userId
+    );
+
+    console.log("userId 不重複，可以繼續處理");
+
+    // 加載標題行
+    await sheet2.loadHeaderRow();
+    const headers2 = sheet2.headerValues;
+
+    const lineIdColumnIndex = headers2.findIndex((header) => header === a);
 
     if (lineIdColumnIndex === -1) {
-      console.log("找不到 'line id' 欄位");
+      console.log("找不到 '帳號' 欄位");
       return;
     }
 
     // 尋找 帳號 的列
-    const allRows = await sheet.getRows();
-    const targetRowIndex = allRows.findIndex(
+    console.log("帳號欄位索引:", lineIdColumnIndex);
+    const allRows2 = await sheet2.getRows();
+    const targetRowIndex = allRows2.findIndex(
       (row) => row._rawData[lineIdColumnIndex] === data[a]
     );
-
+    console.log("輸入的帳號:", data[a]);
     if (targetRowIndex === -1) {
-      console.log("找不到 帳號 的列");
-      return;
+      console.log("找不到匹配的帳號");
+      return "帳號不存在";
     }
 
-    console.log(`line id 為 2 的列是第 ${targetRowIndex + 1} 列`);
+    console.log(`line id 列是第 ${targetRowIndex + 1} 列`);
 
     // 在該列尋找 "密碼" 欄位
-    const accountColumnIndex = headers.findIndex((header) => header === b);
+    const accountColumnIndex = headers2.findIndex((header) => header === b);
 
     if (accountColumnIndex === -1) {
       console.log("找不到 '密碼' 欄位");
@@ -66,13 +84,35 @@ async function main(data) {
     }
 
     // 獲取該列的帳號值
-    const accountValue = allRows[targetRowIndex]._rawData[accountColumnIndex];
+    const accountValue = allRows2[targetRowIndex]._rawData[accountColumnIndex];
+    console.log("密碼:" + accountValue);
     if (accountValue == data[b]) {
+      if (!existingUserId) {
+        console.log("userId 不存在，正在新增資料");
+        await sheet.loadCells();
+        // 準備新的一行數據
+        const newRow = [];
+        const dataFields = ["userId", "liffId", "lineUsername", "帳號", "密碼"];
+
+        headers.forEach((header) => {
+          if (dataFields.includes(header)) {
+            newRow.push(data[header]);
+          } else {
+            newRow.push(""); // 對於其他列，填入空值
+          }
+        });
+
+        // 在表格末尾添加新的一行
+        await sheet.addRow(newRow);
+
+        console.log("新的一行已成功添加到表格中");
+      }
       return "帳號密碼正確";
     } else {
       return "帳號密碼錯誤";
     }
   } catch (error) {
+    console.log(error);
     return "發生錯誤：", error;
   }
 }
